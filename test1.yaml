@@ -1,0 +1,46 @@
+---
+- name: playbook for homework
+  hosts: ansible1
+  tasks:
+  - name: Install a list of packages
+    yum:
+      name:
+      - httpd
+      - firewalld
+      state: latest
+
+  - name: Welcome page
+    copy:
+      content: 'Welcome Step IT'
+      dest: /var/www/html/index.html
+  - name: Start service httpd, if not started
+    service:
+      name: httpd
+      state: started
+
+  - name: Enable service httpd, and not touch the state
+    service:
+      name: httpd
+      enabled: yes
+  - name: start firewald
+    service:
+      name: firewalld
+      state: started
+      enabled: true
+  - name: open service in firewall
+    firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: yes
+
+- name: test webserver access
+  hosts: localhost
+  become: no
+  tasks:
+  - name: Check that a page returns a status 200 and fail if the word AWESOME is not in the page contents
+    uri:
+      url: http://ansible1
+      return_content: yes
+      status_code: 200
+

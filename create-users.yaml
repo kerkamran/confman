@@ -1,0 +1,10 @@
+---
+- name: create a user with vaulted variables
+  hosts: all
+  vars_files:
+    - secret2.yaml
+  tasks:
+  - name: creating user
+    user:
+      name: "{{ username }}"
+      password: "{{ password }}"
